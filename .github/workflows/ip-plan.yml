@@ -1,3 +1,4 @@
+
 name: IP plan check
 
 on:
@@ -20,7 +21,11 @@ jobs:
       - name: Check the address plan
         id: check
         shell: bash
-run: docker run --rm ipcheck | tee report.txt; exit $PIPESTATUS      - name: Open an issue with the report
+        run: |
+          docker run --rm ipcheck | tee report.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Open an issue with the report
         if: failure() && steps.check.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
